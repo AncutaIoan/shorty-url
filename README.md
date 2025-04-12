@@ -37,8 +37,8 @@ Follow these steps to set up and run the project locally.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/reactive-spring-kotlin-redis.git
-cd reactive-spring-kotlin-redis
+git clone https://github.com/AncutaIoan/shorty-url.git
+cd shorty-url
 ```
 
 ### 2. Set up Redis
