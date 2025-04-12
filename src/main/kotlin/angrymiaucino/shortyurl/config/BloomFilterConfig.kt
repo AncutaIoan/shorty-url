@@ -49,7 +49,6 @@ class BloomFilterService(
             .next()
             .map { it == "true" }
             .onErrorResume { error ->
-                // Handle any errors in case of other issues
                 Mono.error(error)
             }
     }

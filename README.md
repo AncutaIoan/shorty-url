@@ -74,7 +74,7 @@ Or build the JAR and run it:
 
 ```bash
 ./gradlew build
-java -jar build/libs/reactive-spring-kotlin-redis.jar
+java -jar build/libs/shorty-url.jar
 ```
 
 The application will be running on `http://localhost:8080` by default.
