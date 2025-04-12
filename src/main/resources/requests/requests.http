@@ -1,0 +1,7 @@
+POST http://localhost:8080/api/short-links
+Content-Type: application/json
+
+{
+  "originalUrl": "www.orange.com",
+  "userId": "831ec447-1f5f-4638-9bde-673c2dcccd6d"
+}

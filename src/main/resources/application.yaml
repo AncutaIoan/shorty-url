@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: shorty-url
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 12345
+    pool:
+      initial-size: 10
+      max-size: 20
