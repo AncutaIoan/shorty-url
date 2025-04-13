@@ -46,9 +46,11 @@ cd shorty-url
 
 ### 2. Set up Redis
 
-If you're running Redis locally, make sure it's installed and running on the default port (`6379`).
+If you're running Redis locally, make sure it's installed and running on the default port (`6379`) and you have the bloom filter module enabled.
 
 If you're using a cloud-based Redis service, obtain the connection URL and credentials.
+
+If you fancy docker, you can run it with: 
 
 ```
 docker run -p 6379:6379 -it --rm redis/redis-stack-server:latest
