@@ -2,6 +2,9 @@
 # Reactive Spring Project with Lettuce, Kotlin, Bloom Filter, and Reactor
 
 This is a Spring Boot application utilizing **Lettuce** (for Redis), **Spring Data Reactive Repositories**, **Reactor** for building reactive and non-blocking applications, and a **Bloom Filter** for the creation of short URLs. The project is written in **Kotlin** and follows reactive programming principles to provide a highly scalable, event-driven architecture.
+## 📐 Design
+
+For detailed technical design, [check the design document](./DESIGN.md).
 
 ## Features
 
