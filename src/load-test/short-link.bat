@@ -15,9 +15,11 @@ FOR /L %%i IN (1,1,%count%) DO (
     echo .
 )
 
-:: Cleanup (wait before deleting payload if needed)
-:: ping 127.0.0.1 -n 10 > nul
-:: del payload.json
+:: Wait for a short time to ensure parallel requests finish
+timeout /t 5 > nul
+
+:: Cleanup - delete payload.json after the timeout
+del payload.json
 
 ENDLOCAL
 pause
