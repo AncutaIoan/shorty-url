@@ -1,7 +1,6 @@
 package angrymiaucino.shortyurl.config
 
 import angrymiaucino.shortyurl.repository.ShortLinkRepository
-import io.lettuce.core.RedisCommandExecutionException
 import jakarta.annotation.PostConstruct
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
 import org.springframework.data.redis.core.script.RedisScript
