@@ -1,4 +1,4 @@
-package angrymiaucino.shortyurl.controller.request
+package angrymiaucino.shortyurl.router.request
 
 import java.util.*
 
