@@ -2,6 +2,7 @@ package angrymiaucino.shortyurl.config
 
 import angrymiaucino.shortyurl.repository.ShortLinkRepository
 import jakarta.annotation.PostConstruct
+import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
 import org.springframework.data.redis.core.script.RedisScript
 import org.springframework.stereotype.Service
@@ -15,6 +16,7 @@ class BloomFilterService(
 ) {
     companion object {
         private const val BLOOM_FILTER_SHORT_URL = "shortenurl-bloomfilter"
+        private val logger = LoggerFactory.getLogger(BloomFilterService::class.java)
     }
 
     @PostConstruct

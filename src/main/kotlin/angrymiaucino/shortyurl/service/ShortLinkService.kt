@@ -4,6 +4,7 @@ import angrymiaucino.shortyurl.config.BloomFilterService
 import angrymiaucino.shortyurl.repository.ShortLinkRepository
 import angrymiaucino.shortyurl.repository.entity.ShortLink
 import angrymiaucino.shortyurl.router.reponse.ShortLinkResponse
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import java.util.*
@@ -15,6 +16,9 @@ class ShortLinkService(
     private val repository: ShortLinkRepository,
     private val cacheService: CacheService
 ) {
+    companion object {
+        private val logger = LoggerFactory.getLogger(ShortLinkService::class.java)
+    }
     fun createShortLink(originalUrl: String, userId: UUID?): Mono<ShortLinkResponse> {
         val code = generateShortCode()
 
