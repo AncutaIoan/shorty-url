@@ -50,6 +50,10 @@ If you're running Redis locally, make sure it's installed and running on the def
 
 If you're using a cloud-based Redis service, obtain the connection URL and credentials.
 
+```
+docker run -p 6379:6379 -it --rm redis/redis-stack-server:latest
+```
+
 ### 3. Configure Application Properties
 
 In the `src/main/resources/application.yml` or `src/main/resources/application.properties`, configure your Redis connection.
