@@ -12,3 +12,9 @@ spring:
     pool:
       initial-size: 10
       max-size: 20
+  flyway:
+    user: ${spring.r2dbc.username}
+    password: ${spring.r2dbc.password}
+    url: jdbc:postgresql://localhost:5432/postgres
+    baseline-on-migrate: true
+    repair-on-migrate: true

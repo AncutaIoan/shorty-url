@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "spring.flyway.repair-on-migrate",
+      "type": "java.lang.Boolean",
+      "description": "Whether Flyway should automatically run repair before migrate. Useful for fixing checksums or failed migrations."
+    }
+  ]
+}

@@ -31,6 +31,10 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     implementation("com.google.guava:guava:33.4.7-jre")
 
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
+
+    runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
