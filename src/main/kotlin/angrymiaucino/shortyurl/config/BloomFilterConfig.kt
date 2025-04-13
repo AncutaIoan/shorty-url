@@ -32,26 +32,25 @@ class BloomFilterService(
 
     fun initBloomFilter(): Mono<Boolean> {
         val script = """
-                                if redis.call('EXISTS', KEYS[1]) == 0 then
-                                    redis.call('BF.RESERVE', KEYS[1], ARGV[1], ARGV[2])
-                                    return true
-                                else
-                                    return false
-                                end
-                            """.trimIndent()
+                        if redis.call('EXISTS', KEYS[1]) == 0 then
+                            redis.call('BF.RESERVE', KEYS[1], ARGV[1], ARGV[2])
+                            return 1
+                        else
+                            return 0
+                        end
+                    """.trimIndent()
 
-        val redisScript = RedisScript.of(script, String::class.java)
+        val redisScript = RedisScript.of(script, Long::class.java) // Fixed return type
         val keys = listOf(BLOOM_FILTER_SHORT_URL)
         val args = listOf("0.001", "100000") // error rate and expected number of items
 
         return redisTemplate.execute(redisScript, keys, args)
             .next()
-            .map { it == "true" }
+            .map { it == 1L } // 1 = created, 0 = already exists
             .onErrorResume { error ->
                 Mono.error(error)
             }
     }
-
 
     fun add(data: String): Mono<Boolean> {
         val script = RedisScript.of("return redis.call('BF.ADD', KEYS[1], ARGV[1])", Long::class.java)
@@ -67,3 +66,4 @@ class BloomFilterService(
             .map { it == 1L } // Check if the result is 1 (exists)
     }
 }
+
