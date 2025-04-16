@@ -29,9 +29,8 @@ class BloomFilterService(
         initBloomFilter()
             .then(preloadFromDbPaginated(0, 1000))
             .subscribe()
-
-
     }
+
     fun preloadFromDbPaginated(page: Int = 0, size: Int): Mono<Void> =
         shortLinkRepository.findShortCodesPaginated(page * size, size)
             .collectList()
