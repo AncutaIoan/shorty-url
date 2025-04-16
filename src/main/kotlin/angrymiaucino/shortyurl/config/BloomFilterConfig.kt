@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
 import org.springframework.data.redis.core.script.RedisScript
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
@@ -28,15 +27,30 @@ class BloomFilterService(
         }
 
         initBloomFilter()
-            .then(preloadFromDb(shortLinkRepository.findAll().map { it.shortCode }))
+            .then(preloadFromDbPaginated(0, 1000))
             .subscribe()
-    }
 
-    fun preloadFromDb(urls: Flux<String>): Mono<Void> {
+
+    }
+    fun preloadFromDbPaginated(page: Int = 0, size: Int): Mono<Void> =
+        shortLinkRepository.findShortCodesPaginated(page * size, size)
+            .collectList()
+            .flatMap { batch -> handle(batch, page, size) }
+
+
+    private fun handle(batch: MutableList<String>, page: Int, size: Int) =
+        if (batch.isEmpty()) {
+            Mono.empty()
+        } else {
+            addBatchToBloomFilter(batch)
+                .then(preloadFromDbPaginated(page + 1, size))
+        }
+
+
+    fun addBatchToBloomFilter(batch: List<String>): Mono<Void> {
         val script = RedisScript.of("for i=1,#ARGV do redis.call('BF.ADD', KEYS[1], ARGV[i]) end; return 1", Long::class.java)
-        return urls.buffer(1000)
-            .flatMap({ batch -> redisTemplate.execute(script, listOf(BLOOM_FILTER_SHORT_URL), batch) }, 4)
-            .then()
+        return redisTemplate.execute(script, listOf(BLOOM_FILTER_SHORT_URL), batch)
+                .then()
     }
 
     fun initBloomFilter(): Mono<Boolean> {
@@ -55,10 +69,8 @@ class BloomFilterService(
 
         return redisTemplate.execute(redisScript, keys, args)
             .next()
-            .map { it == 1L } // 1 = created, 0 = already exists
-            .onErrorResume { error ->
-                Mono.error(error)
-            }
+            .map { it == 1L }
+            .onErrorResume { error -> Mono.error(error) }
     }
 
     fun add(data: String): Mono<Boolean> {
