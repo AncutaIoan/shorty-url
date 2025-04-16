@@ -23,7 +23,7 @@ class BloomFilterService(
 
     @PostConstruct
     fun initialize() {
-        if (needsPreload) {
+        if (!needsPreload) {
             return
         }
 
@@ -49,9 +49,9 @@ class BloomFilterService(
                         end
                     """.trimIndent()
 
-        val redisScript = RedisScript.of(script, Long::class.java) // Fixed return type
+        val redisScript = RedisScript.of(script, Long::class.java)
         val keys = listOf(BLOOM_FILTER_SHORT_URL)
-        val args = listOf("0.001", "100000") // error rate and expected number of items
+        val args = listOf("0.001", "100000")
 
         return redisTemplate.execute(redisScript, keys, args)
             .next()

@@ -129,6 +129,87 @@ fun createShortLink(originalUrl: String, userId: UUID?): Mono<ShortLinkResponse>
 +-------------------------+
 
 ```
+## High-Level Flow of `initialize()` Function from bloom-filter
+```
+[ Application Start ]
+         |
+         v
+   +-----------------------------+
+   | Spring Creates Bean (BloomFilterService) |
+   | (Bean Instantiation)        |
+   +-----------------------------+
+         |
+         v
+   +-----------------------------+
+   | BeanPostProcessor (Before Initialization)  |
+   | (postProcessBeforeInitialization) |
+   +-----------------------------+
+         |
+         v
+   +-----------------------------+
+   | Dependency Injection         |
+   | (ReactiveStringRedisTemplate, |
+   | ShortLinkRepository)         |
+   +-----------------------------+
+         |
+         v
+   +-----------------------------+
+   | BeanPostProcessor (After Initialization) |
+   | (postProcessAfterInitialization) |
+   +-----------------------------+
+         |
+         v
+   +-----------------------------+
+   | Check if Preload is Needed  |
+   | (initialize)                |
+   +-----------------------------+
+         |
+         v
+  [ If Preload is NOT Needed ]
+         |
+         v
+   +-----------------------------+
+   | Initialize Bloom Filter     |
+   | (initBloomFilter)            |
+   +-----------------------------+
+         |
+         v
+   +-----------------------------+
+   | Bloom Filter Exists?        |
+   | (Check in Redis)            |
+   +-----------------------------+
+         |
+         v
+   +-----------------------------+       +-------------------------+
+   | Create Bloom Filter if Not   | <--- | Bloom Filter Already    |
+   | Exists (BF.RESERVE)         |      | Exists (skip)           |
+   +-----------------------------+       +-------------------------+
+         |
+         v
+   +-----------------------------+
+   | Preload Data from DB to     |
+   | Bloom Filter                |
+   | (preloadFromDb)             |
+   +-----------------------------+
+         |
+         v
+   +-----------------------------+
+   | Process and Batch Data      |
+   | (Buffering in Chunks of 1000)|
+   +-----------------------------+
+         |
+         v
+   +-----------------------------+
+   | Add Data to Bloom Filter    |
+   | (BF.ADD in Redis)           |
+   +-----------------------------+
+         |
+         v
+   +-----------------------------+
+   | Completion of Preloading    |
+   | (Done)                      |
+   +-----------------------------+
+```
 
 ## 8. Tech Stack
 
