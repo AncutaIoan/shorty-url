@@ -3,6 +3,7 @@ package angrymiaucino.shortyurl.config
 import angrymiaucino.shortyurl.repository.ShortLinkRepository
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
 import org.springframework.data.redis.core.script.RedisScript
 import org.springframework.stereotype.Service
@@ -12,7 +13,8 @@ import reactor.core.publisher.Mono
 @Service
 class BloomFilterService(
     private val redisTemplate: ReactiveStringRedisTemplate,
-    private val shortLinkRepository: ShortLinkRepository
+    private val shortLinkRepository: ShortLinkRepository,
+    @Value("\${bloom-filter.needs-fill}") private val needsPreload: Boolean = false,
 ) {
     companion object {
         private const val BLOOM_FILTER_SHORT_URL = "shortenurl-bloomfilter"
@@ -21,14 +23,19 @@ class BloomFilterService(
 
     @PostConstruct
     fun initialize() {
+        if (needsPreload) {
+            return
+        }
+
         initBloomFilter()
             .then(preloadFromDb(shortLinkRepository.findAll().map { it.shortCode }))
             .subscribe()
     }
 
     fun preloadFromDb(urls: Flux<String>): Mono<Void> {
-        return urls
-            .flatMap { add(it) }
+        val script = RedisScript.of("for i=1,#ARGV do redis.call('BF.ADD', KEYS[1], ARGV[i]) end; return 1", Long::class.java)
+        return urls.buffer(1000)
+            .flatMap({ batch -> redisTemplate.execute(script, listOf(BLOOM_FILTER_SHORT_URL), batch) }, 4)
             .then()
     }
 

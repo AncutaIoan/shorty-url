@@ -18,3 +18,5 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     baseline-on-migrate: true
     repair-on-migrate: true
+bloom-filter:
+  needs-fill: true

@@ -4,6 +4,11 @@
       "name": "spring.flyway.repair-on-migrate",
       "type": "java.lang.Boolean",
       "description": "Whether Flyway should automatically run repair before migrate. Useful for fixing checksums or failed migrations."
+    },
+    {
+      "name": "bloom-filter.needs-fill",
+      "type": "java.lang.Boolean",
+      "description": "Indicates whether the Bloom filter requires more elements to be added in order to reach the desired fill rate or capacity. This flag can be used to monitor the state of the Bloom filter and trigger background loading or preloading of data into the filter to ensure optimal performance and accuracy."
     }
   ]
 }
