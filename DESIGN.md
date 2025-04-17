@@ -10,6 +10,7 @@ This service allows users to create shortened URLs that redirect to original, lo
 - Basic analytics (optional: click count, timestamp)
 - Expiration support (optional)
 - Minimal latency
+- Postgres DB snapshots for bloom filter for faster load time
 
 ## 3. Non-Goals
 - No user authentication (working onto it)
