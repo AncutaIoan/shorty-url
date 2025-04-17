@@ -1,9 +1,11 @@
 package angrymiaucino.shortyurl.test_configuration
 
+import io.r2dbc.spi.ConnectionFactory
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Tag
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.PostgreSQLContainer
@@ -11,6 +13,9 @@ import org.testcontainers.utility.DockerImageName
 
 @Tag("integration-test")
 abstract class TestcontainersConfigurationBase {
+    @Autowired
+    lateinit var connectionFactory: ConnectionFactory
+
     companion object {
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
